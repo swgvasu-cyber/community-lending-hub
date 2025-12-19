@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Outlet, Navigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Sidebar } from './Sidebar';
+import { LanguageToggle } from './LanguageToggle';
 
 export function DashboardLayout() {
   const { isAuthenticated, isLoading } = useAuth();
@@ -25,9 +26,15 @@ export function DashboardLayout() {
   return (
     <div className="min-h-screen flex bg-background">
       <Sidebar collapsed={sidebarCollapsed} onToggle={() => setSidebarCollapsed(!sidebarCollapsed)} />
-      <main className="flex-1 overflow-auto">
-        <Outlet />
-      </main>
+      <div className="flex-1 flex flex-col overflow-auto">
+        {/* Top Header with Language Toggle */}
+        <header className="h-14 border-b border-border bg-card flex items-center justify-end px-6 sticky top-0 z-10">
+          <LanguageToggle />
+        </header>
+        <main className="flex-1 overflow-auto">
+          <Outlet />
+        </main>
+      </div>
     </div>
   );
 }
