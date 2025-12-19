@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/contexts/AuthContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import {
   LayoutDashboard,
   Users,
@@ -148,6 +149,7 @@ const NavGroup = ({ label, icon: Icon, items, collapsed }: NavGroupProps) => {
 
 export function Sidebar({ collapsed, onToggle }: SidebarProps) {
   const { user, logout } = useAuth();
+  const { t } = useLanguage();
 
   return (
     <aside
@@ -181,32 +183,32 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
 
       {/* Navigation */}
       <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
-        <NavItem to="/dashboard" icon={LayoutDashboard} label="Dashboard" collapsed={collapsed} />
+        <NavItem to="/dashboard" icon={LayoutDashboard} label={t('nav.dashboard')} collapsed={collapsed} />
 
         <NavGroup
-          label="Master Data"
+          label={t('nav.borrowers')}
           icon={Building2}
           collapsed={collapsed}
           items={[
-            { to: '/borrowers', label: 'Borrowers' },
-            { to: '/loan-types', label: 'Loan Types' },
+            { to: '/borrowers', label: t('nav.borrowers') },
+            { to: '/loan-types', label: t('nav.loanTypes') },
           ]}
         />
 
         <NavGroup
-          label="Finance"
+          label={t('nav.loans')}
           icon={Wallet}
           collapsed={collapsed}
           items={[
-            { to: '/loans', label: 'Loans' },
-            { to: '/loans/new', label: 'New Loan' },
-            { to: '/collections', label: 'Collections' },
-            { to: '/collections/new', label: 'New Collection' },
+            { to: '/loans', label: t('nav.loans') },
+            { to: '/loans/new', label: t('loans.createNew') },
+            { to: '/collections', label: t('nav.collections') },
+            { to: '/collections/new', label: t('collections.recordNew') },
           ]}
         />
 
-        <NavItem to="/staff" icon={UserCog} label="Staff & Agents" collapsed={collapsed} />
-        <NavItem to="/reports" icon={FileText} label="Reports" collapsed={collapsed} />
+        <NavItem to="/staff" icon={UserCog} label={t('nav.staff')} collapsed={collapsed} />
+        <NavItem to="/reports" icon={FileText} label={t('nav.reports')} collapsed={collapsed} />
       </nav>
 
       {/* User Section */}
@@ -234,6 +236,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
               'text-sidebar-foreground/70 hover:text-destructive hover:bg-destructive/10',
               collapsed && 'p-1'
             )}
+            title={t('nav.logout')}
           >
             <LogOut className="h-4 w-4" />
           </Button>

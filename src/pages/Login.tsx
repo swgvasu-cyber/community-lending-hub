@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
 import { Eye, EyeOff, LogIn } from 'lucide-react';
 
@@ -14,6 +16,7 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
+  const { t, language, toggleLanguage } = useLanguage();
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -22,8 +25,8 @@ export default function Login() {
     
     if (!username || !password) {
       toast({
-        title: 'Error',
-        description: 'Please enter both username and password',
+        title: t('login.error'),
+        description: t('login.errorBoth'),
         variant: 'destructive',
       });
       return;
@@ -35,14 +38,14 @@ export default function Login() {
 
     if (success) {
       toast({
-        title: 'Welcome!',
-        description: 'You have successfully logged in',
+        title: t('login.welcomeMsg'),
+        description: t('login.successMsg'),
       });
       navigate('/dashboard');
     } else {
       toast({
-        title: 'Login Failed',
-        description: 'Invalid username or password',
+        title: t('login.failed'),
+        description: t('login.invalidCredentials'),
         variant: 'destructive',
       });
     }
@@ -57,99 +60,118 @@ export default function Login() {
           <div className="w-16 h-16 rounded-2xl bg-primary-foreground/10 flex items-center justify-center mb-8">
             <span className="text-3xl font-bold">M</span>
           </div>
-          <h1 className="text-4xl font-bold mb-4">MicroFinance Pro</h1>
+          <h1 className="text-4xl font-bold mb-4">{t('app.name')}</h1>
           <p className="text-lg text-primary-foreground/80 max-w-md">
-            Complete loan management solution for microfinance institutions. Manage borrowers, track loans, and streamline collections.
+            {t('app.tagline')}
           </p>
           <div className="mt-12 grid grid-cols-2 gap-6">
             <div className="p-4 rounded-xl bg-primary-foreground/10">
               <p className="text-2xl font-bold">500+</p>
-              <p className="text-sm text-primary-foreground/70">Active Loans</p>
+              <p className="text-sm text-primary-foreground/70">{t('login.activeLoans')}</p>
             </div>
             <div className="p-4 rounded-xl bg-primary-foreground/10">
               <p className="text-2xl font-bold">₹2.5Cr</p>
-              <p className="text-sm text-primary-foreground/70">Total Disbursed</p>
+              <p className="text-sm text-primary-foreground/70">{t('login.totalDisbursed')}</p>
             </div>
             <div className="p-4 rounded-xl bg-primary-foreground/10">
               <p className="text-2xl font-bold">98%</p>
-              <p className="text-sm text-primary-foreground/70">Collection Rate</p>
+              <p className="text-sm text-primary-foreground/70">{t('login.collectionRate')}</p>
             </div>
             <div className="p-4 rounded-xl bg-primary-foreground/10">
               <p className="text-2xl font-bold">15</p>
-              <p className="text-sm text-primary-foreground/70">Team Members</p>
+              <p className="text-sm text-primary-foreground/70">{t('login.teamMembers')}</p>
             </div>
           </div>
         </div>
       </div>
 
       {/* Right Panel - Login Form */}
-      <div className="flex-1 flex items-center justify-center p-8 bg-background">
-        <Card className="w-full max-w-md border-0 shadow-lg">
-          <CardHeader className="text-center pb-2">
-            <div className="w-14 h-14 mx-auto mb-4 rounded-xl bg-primary flex items-center justify-center">
-              <span className="text-2xl font-bold text-primary-foreground">M</span>
-            </div>
-            <CardTitle className="text-2xl">Welcome Back</CardTitle>
-            <CardDescription>Sign in to access your dashboard</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="username">Username</Label>
-                <Input
-                  id="username"
-                  type="text"
-                  placeholder="Enter your username"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  className="h-11"
-                />
+      <div className="flex-1 flex flex-col bg-background">
+        {/* Language Toggle on Login Page */}
+        <div className="flex justify-end p-4">
+          <div className="flex items-center gap-2">
+            <Label htmlFor="login-language-toggle" className="text-sm font-medium text-foreground cursor-pointer">
+              {t('language.english')}
+            </Label>
+            <Switch
+              id="login-language-toggle"
+              checked={language === 'ta'}
+              onCheckedChange={toggleLanguage}
+            />
+            <Label htmlFor="login-language-toggle" className="text-sm font-medium text-foreground cursor-pointer">
+              {t('language.tamil')}
+            </Label>
+          </div>
+        </div>
+        
+        <div className="flex-1 flex items-center justify-center p-8">
+          <Card className="w-full max-w-md border-0 shadow-lg">
+            <CardHeader className="text-center pb-2">
+              <div className="w-14 h-14 mx-auto mb-4 rounded-xl bg-primary flex items-center justify-center">
+                <span className="text-2xl font-bold text-primary-foreground">M</span>
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
-                <div className="relative">
+              <CardTitle className="text-2xl">{t('login.welcome')}</CardTitle>
+              <CardDescription>{t('login.subtitle')}</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="username">{t('login.username')}</Label>
                   <Input
-                    id="password"
-                    type={showPassword ? 'text' : 'password'}
-                    placeholder="Enter your password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="h-11 pr-10"
+                    id="username"
+                    type="text"
+                    placeholder={t('login.usernamePlaceholder')}
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    className="h-11"
                   />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-                  >
-                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                  </button>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="password">{t('login.password')}</Label>
+                  <div className="relative">
+                    <Input
+                      id="password"
+                      type={showPassword ? 'text' : 'password'}
+                      placeholder={t('login.passwordPlaceholder')}
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="h-11 pr-10"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                    >
+                      {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
+                  </div>
+                </div>
+                <Button type="submit" className="w-full h-11 mt-6" disabled={isLoading}>
+                  {isLoading ? (
+                    <span className="flex items-center gap-2">
+                      <span className="w-4 h-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
+                      {t('login.signingIn')}
+                    </span>
+                  ) : (
+                    <span className="flex items-center gap-2">
+                      <LogIn className="h-4 w-4" />
+                      {t('login.signIn')}
+                    </span>
+                  )}
+                </Button>
+              </form>
+
+              <div className="mt-6 p-4 bg-muted rounded-lg">
+                <p className="text-sm font-medium text-muted-foreground mb-2">{t('login.demoCredentials')}</p>
+                <div className="space-y-1 text-xs">
+                  <p><span className="font-medium">{t('login.admin')}:</span> admin / admin123</p>
+                  <p><span className="font-medium">{t('login.staff')}:</span> staff1 / staff123</p>
+                  <p><span className="font-medium">{t('login.agent')}:</span> agent1 / agent123</p>
                 </div>
               </div>
-              <Button type="submit" className="w-full h-11 mt-6" disabled={isLoading}>
-                {isLoading ? (
-                  <span className="flex items-center gap-2">
-                    <span className="w-4 h-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
-                    Signing in...
-                  </span>
-                ) : (
-                  <span className="flex items-center gap-2">
-                    <LogIn className="h-4 w-4" />
-                    Sign In
-                  </span>
-                )}
-              </Button>
-            </form>
-
-            <div className="mt-6 p-4 bg-muted rounded-lg">
-              <p className="text-sm font-medium text-muted-foreground mb-2">Demo Credentials:</p>
-              <div className="space-y-1 text-xs">
-                <p><span className="font-medium">Admin:</span> admin / admin123</p>
-                <p><span className="font-medium">Staff:</span> staff1 / staff123</p>
-                <p><span className="font-medium">Agent:</span> agent1 / agent123</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   );

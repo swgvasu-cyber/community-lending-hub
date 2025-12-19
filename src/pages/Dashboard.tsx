@@ -1,5 +1,6 @@
 import React from 'react';
 import { useData } from '@/contexts/DataContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { StatCard } from '@/components/dashboard/StatCard';
 import { DataTable } from '@/components/common/DataTable';
@@ -19,6 +20,7 @@ import { format } from 'date-fns';
 
 export default function Dashboard() {
   const { getStats, loans, collections } = useData();
+  const { t } = useLanguage();
   const stats = getStats();
 
   const formatCurrency = (value: number) => {
@@ -34,33 +36,33 @@ export default function Dashboard() {
   return (
     <div className="p-6">
       <PageHeader
-        title="Dashboard"
-        description="Welcome to MicroFinance Pro - Your loan management overview"
+        title={t('dashboard.title')}
+        description={t('dashboard.welcome')}
       />
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <StatCard
-          title="Total Borrowers"
+          title={t('dashboard.totalBorrowers')}
           value={stats.totalBorrowers}
           icon={Users}
           variant="primary"
           trend={{ value: 12, positive: true }}
         />
         <StatCard
-          title="Active Loans"
+          title={t('dashboard.activeLoans')}
           value={stats.activeLoans}
           icon={CreditCard}
           variant="accent"
         />
         <StatCard
-          title="Total Disbursed"
+          title={t('dashboard.totalDisbursed')}
           value={formatCurrency(stats.totalDisbursed)}
           icon={Wallet}
           variant="success"
         />
         <StatCard
-          title="Total Collected"
+          title={t('dashboard.totalCollected')}
           value={formatCurrency(stats.totalCollected)}
           icon={IndianRupee}
           variant="primary"
@@ -69,25 +71,25 @@ export default function Dashboard() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <StatCard
-          title="Today's Collection"
+          title={t('dashboard.todayCollection')}
           value={formatCurrency(stats.todayCollection)}
           icon={CalendarCheck}
           variant="success"
         />
         <StatCard
-          title="Collection Rate"
+          title={t('dashboard.collectionRate')}
           value={`${stats.collectionRate.toFixed(1)}%`}
           icon={TrendingUp}
           variant="primary"
         />
         <StatCard
-          title="Pending EMIs"
+          title={t('dashboard.pendingEMIs')}
           value={stats.pendingInstallments}
           icon={Receipt}
           variant="warning"
         />
         <StatCard
-          title="Overdue Amount"
+          title={t('dashboard.overdueAmount')}
           value={formatCurrency(stats.overdueAmount)}
           icon={AlertTriangle}
           variant="destructive"
@@ -101,7 +103,7 @@ export default function Dashboard() {
           <CardHeader>
             <CardTitle className="text-lg flex items-center gap-2">
               <CreditCard className="h-5 w-5 text-primary" />
-              Recent Loans
+              {t('dashboard.recentLoans')}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -109,16 +111,16 @@ export default function Dashboard() {
               data={recentLoans}
               keyExtractor={(item) => item.id}
               columns={[
-                { key: 'loanNumber', header: 'Loan #' },
-                { key: 'borrowerName', header: 'Borrower' },
+                { key: 'loanNumber', header: t('dashboard.loanNumber') },
+                { key: 'borrowerName', header: t('dashboard.borrower') },
                 {
                   key: 'principalAmount',
-                  header: 'Amount',
+                  header: t('dashboard.amount'),
                   render: (item) => `₹${item.principalAmount.toLocaleString()}`,
                 },
                 {
                   key: 'status',
-                  header: 'Status',
+                  header: t('dashboard.status'),
                   render: (item) => (
                     <Badge
                       variant={item.status === 'active' ? 'default' : item.status === 'closed' ? 'secondary' : 'destructive'}
@@ -129,7 +131,7 @@ export default function Dashboard() {
                 },
               ]}
               pageSize={5}
-              emptyMessage="No loans yet"
+              emptyMessage={t('dashboard.noLoans')}
             />
           </CardContent>
         </Card>
@@ -139,7 +141,7 @@ export default function Dashboard() {
           <CardHeader>
             <CardTitle className="text-lg flex items-center gap-2">
               <Receipt className="h-5 w-5 text-success" />
-              Recent Collections
+              {t('dashboard.recentCollections')}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -147,21 +149,21 @@ export default function Dashboard() {
               data={recentCollections}
               keyExtractor={(item) => item.id}
               columns={[
-                { key: 'collectionNumber', header: 'Collection #' },
-                { key: 'borrowerName', header: 'Borrower' },
+                { key: 'collectionNumber', header: t('dashboard.collectionNumber') },
+                { key: 'borrowerName', header: t('dashboard.borrower') },
                 {
                   key: 'collectedAmount',
-                  header: 'Amount',
+                  header: t('dashboard.amount'),
                   render: (item) => `₹${item.collectedAmount.toLocaleString()}`,
                 },
                 {
                   key: 'collectionDate',
-                  header: 'Date',
+                  header: t('dashboard.date'),
                   render: (item) => format(new Date(item.collectionDate), 'dd/MM/yyyy'),
                 },
               ]}
               pageSize={5}
-              emptyMessage="No collections yet"
+              emptyMessage={t('dashboard.noCollections')}
             />
           </CardContent>
         </Card>
